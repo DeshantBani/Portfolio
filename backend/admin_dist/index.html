@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Admin</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 1rem; max-width: 900px; margin-left: auto; margin-right: auto; }
+    h1 { margin-top: 0; }
+    input[type="password"], button { padding: 0.5rem 0.75rem; font-size: 1rem; }
+    button { cursor: pointer; background: #2563eb; color: white; border: none; border-radius: 6px; }
+    button:hover { background: #1d4ed8; }
+    button.secondary { background: #6b7280; }
+    button.secondary:hover { background: #4b5563; }
+    .login-box { margin: 2rem 0; }
+    .section { margin: 1.5rem 0; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+    .section h2 { margin: 0; padding: 0.75rem 1rem; background: #f9fafb; font-size: 1rem; }
+    .section textarea { width: 100%; min-height: 200px; font-family: monospace; font-size: 12px; padding: 1rem; border: none; resize: vertical; }
+    .section .actions { padding: 0.5rem 1rem; background: #f9fafb; }
+    .error { color: #dc2626; margin: 0.5rem 0; }
+    .success { color: #16a34a; margin: 0.5rem 0; }
+    .logout { float: right; }
+  </style>
+</head>
+<body>
+  <div id="login-view" class="login-box">
+    <h1>Portfolio Admin</h1>
+    <p>Enter your admin secret (ADMIN_SECRET):</p>
+    <input type="password" id="token" placeholder="Admin secret" />
+    <button type="button" id="login-btn">Log in</button>
+    <p id="login-error" class="error" style="display:none;"></p>
+  </div>
+
+  <div id="editor-view" style="display:none;">
+    <h1>Portfolio Admin <button type="button" class="logout secondary" id="logout-btn">Log out</button></h1>
+    <p id="editor-status" class="success" style="display:none;">Saved.</p>
+    <div id="sections"></div>
+  </div>
+
+  <script>
+    const API = '';
+    function getToken() { return sessionStorage.getItem('adminToken'); }
+    function setToken(t) { if (t) sessionStorage.setItem('adminToken', t); else sessionStorage.removeItem('adminToken'); }
+
+    function showLogin() {
+      document.getElementById('login-view').style.display = 'block';
+      document.getElementById('editor-view').style.display = 'none';
+    }
+    function showEditor() {
+      document.getElementById('login-view').style.display = 'none';
+      document.getElementById('editor-view').style.display = 'block';
+      if (!window._content) loadContent();
+      else renderSections();
+    }
+
+    document.getElementById('login-btn').addEventListener('click', async () => {
+      const token = document.getElementById('token').value.trim();
+      if (!token) { document.getElementById('login-error').textContent = 'Enter the admin secret.'; document.getElementById('login-error').style.display = 'block'; return; }
+      setToken(token);
+      document.getElementById('login-error').style.display = 'none';
+      try {
+        const r = await fetch(API + '/api/admin/content', { headers: { 'Authorization': 'Bearer ' + token } });
+        if (r.ok) { showEditor(); return; }
+        setToken(null);
+        document.getElementById('login-error').textContent = 'Invalid token.';
+        document.getElementById('login-error').style.display = 'block';
+      } catch (e) {
+        setToken(null);
+        document.getElementById('login-error').textContent = 'Network error: ' + e.message;
+        document.getElementById('login-error').style.display = 'block';
+      }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => { setToken(null); showLogin(); });
+
+    async function loadContent() {
+      const token = getToken();
+      const r = await fetch(API + '/api/admin/content', { headers: { 'Authorization': 'Bearer ' + token } });
+      if (!r.ok) { showLogin(); return; }
+      window._content = await r.json();
+      renderSections();
+    }
+
+    const SECTIONS = ['about', 'experience', 'projects', 'achievements', 'technologies', 'contact'];
+
+    function renderSections() {
+      const container = document.getElementById('sections');
+      container.innerHTML = '';
+      SECTIONS.forEach(section => {
+        const val = window._content[section];
+        const str = JSON.stringify(val, null, 2);
+        const div = document.createElement('div');
+        div.className = 'section';
+        div.innerHTML = '<h2>' + section + '</h2><textarea data-section="' + section + '">' + escapeHtml(str) + '</textarea><div class="actions"><button type="button" class="save-section">Save ' + section + '</button></div>';
+        container.appendChild(div);
+        div.querySelector('.save-section').addEventListener('click', () => saveSection(section, div.querySelector('textarea').value));
+      });
+    }
+
+    function escapeHtml(s) {
+      const div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    async function saveSection(section, raw) {
+      let data;
+      try { data = JSON.parse(raw); } catch (e) {
+        document.getElementById('editor-status').textContent = 'Invalid JSON in ' + section + ': ' + e.message;
+        document.getElementById('editor-status').className = 'error';
+        document.getElementById('editor-status').style.display = 'block';
+        return;
+      }
+      const token = getToken();
+      const r = await fetch(API + '/api/admin/content/' + section, {
+        method: 'PUT',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!r.ok) {
+        document.getElementById('editor-status').textContent = 'Save failed: ' + (await r.text());
+        document.getElementById('editor-status').className = 'error';
+        document.getElementById('editor-status').style.display = 'block';
+        return;
+      }
+      window._content[section] = data;
+      document.getElementById('editor-status').textContent = 'Saved ' + section + '.';
+      document.getElementById('editor-status').className = 'success';
+      document.getElementById('editor-status').style.display = 'block';
+      setTimeout(() => { document.getElementById('editor-status').style.display = 'none'; }, 2000);
+    }
+
+    if (getToken()) {
+      fetch(API + '/api/admin/content', { headers: { 'Authorization': 'Bearer ' + getToken() } })
+        .then(r => r.ok ? showEditor() : showLogin())
+        .catch(() => showLogin());
+    } else {
+      showLogin();
+    }
+  </script>
+</body>
+</html>

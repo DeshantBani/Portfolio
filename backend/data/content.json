@@ -1,0 +1,136 @@
+{
+  "about": {
+    "name": "Deshant Singh Bani",
+    "headline": "I build agentic AI systems & LLM-powered products",
+    "oneLiner": "From LangGraph multi-agents to RAG and document intelligence.",
+    "bio": "AI/ML Engineer with hands-on experience building production-ready systems across multi-agent workflows, RAG, and document intelligence. I've delivered AI POCs for enterprise clients including Microsoft and Hyundai North America, and led technical walkthroughs with senior engineering stakeholders. I specialize in LangGraph, FastAPI, and end-to-end deployment from design to delivery.",
+    "photoUrl": "/avatar.jpg",
+    "education": {
+      "institution": "Indian Institute of Information Technology, Nagpur",
+      "degree": "B.Tech, Computer Science and Engineering",
+      "specialization": "Specialisation in AI & ML",
+      "location": "Nagpur, Maharashtra",
+      "startDate": "Nov 2022",
+      "endDate": "June 2026"
+    },
+    "personalityTags": ["Fluent in algorithms", "Powered by caffeine", "Passionate about AI", "Agentic at heart"],
+    "quote": "Building production-ready AI that cuts manual work from days to minutes."
+  },
+  "experience": [
+    {
+      "id": "infogain",
+      "company": "Infogain",
+      "role": "AI/ML Intern — Data & AI Studio",
+      "location": "Remote",
+      "startDate": "Nov 2025",
+      "endDate": "May 2026",
+      "bullets": [
+        "Presented AI POCs to enterprise clients including Microsoft, Hyundai North America, and a Europe-based tech firm; led technical walkthroughs and Q&A with senior engineering and business stakeholders.",
+        "Currently on an active Fortune 500 client engagement with direct ownership of AI system design and delivery.",
+        "Built a LangGraph multi-agent recruitment system with GPT-5.2 scoring, ChromaDB retrieval, and ElevenLabs AI interviews — cutting candidate screening from days to hours.",
+        "Developed a SOC2 compliance audit platform using LangGraph, Microsoft Graph (MSAL), and image-aware DOCX/PDF validation — cutting manual audit review from hours to minutes with automated pass/fail reporting.",
+        "Engineered an agentic root cause analysis system using LLM reasoning over historical ticket data, enabling domain leads to trace and resolve upstream failures without manual investigation.",
+        "Migrated a Java middleware layer to Python FastAPI, rebuilding the communication layer between an Angular frontend and data science backends — improving maintainability and cutting deployment time for AI features."
+      ],
+      "techTags": ["LangGraph", "FastAPI", "ChromaDB", "ElevenLabs", "Microsoft Graph", "GPT-5"]
+    },
+    {
+      "id": "carpm",
+      "company": "CaRPM",
+      "role": "AI Intern",
+      "location": "Gurugram",
+      "startDate": "July 2025",
+      "endDate": "Nov 2025",
+      "bullets": [
+        "Built a vehicle diagnostic simplification API using GPT-4o to translate fault reports into consumer-friendly summaries — enabling a $5 subscription model at $0.015/report cost.",
+        "Engineered a GPT-4o translation pipeline for automotive fault codes across multiple languages, enabling global expansion with 50% cost savings across 10M+ records.",
+        "Automated PDF-to-structured-data extraction with GPT-4o and FastAPI, reducing the catalogue update team from 3 to 1 and cutting per-document processing from 12 hours to 2 hours."
+      ],
+      "techTags": ["GPT-4o", "FastAPI", "Python"]
+    },
+    {
+      "id": "jio",
+      "company": "Jio Platforms Limited",
+      "role": "AI Intern",
+      "location": "Noida, U.P.",
+      "startDate": "Dec 2024",
+      "endDate": "Jan 2025",
+      "bullets": [
+        "Engineered a production multi-agent framework achieving a 100% task completion rate across complex automated workflows.",
+        "Adapted Magnetic-One for LLaMA 3.2 Vision 90B, cutting infrastructure costs by 35% without quality loss.",
+        "Built a web extraction and RAG pipeline using Playwright, delivering 50% faster query responses."
+      ],
+      "techTags": ["Multi-agent", "LLaMA", "Playwright", "RAG"]
+    },
+    {
+      "id": "cs-electric",
+      "company": "C&S Electric Ltd",
+      "role": "AI Intern",
+      "location": "Noida, U.P.",
+      "startDate": "June 2024",
+      "endDate": "July 2024",
+      "bullets": [
+        "Built a customer-facing AI chatbot for the company website using AWS Bedrock, allowing clients to instantly query product and technical information.",
+        "Designed a serverless RAG pipeline (Docker + Lambda) with session-aware query tracking, reducing embedding time by 97% and query latency by 95%."
+      ],
+      "techTags": ["AWS Bedrock", "RAG", "Docker", "Lambda"]
+    }
+  ],
+  "projects": [
+    {
+      "id": "phishing-url",
+      "title": "Phishing URL Detection System",
+      "description": "High-throughput phishing detection model processing 100k+ URLs/batch at 1k predictions/min. Deployed via automated CI/CD with Docker, AWS, Airflow, and Terraform.",
+      "metrics": ["100k+ URLs/batch", "1k predictions/min", "~40% inference time reduction"],
+      "stack": ["PyTorch", "FastAPI", "Docker", "AWS", "Airflow", "Terraform"],
+      "repoUrl": "https://github.com/DeshantBani",
+      "demoUrl": null,
+      "imageUrl": null,
+      "featured": true,
+      "date": "Aug 2024"
+    }
+  ],
+  "achievements": {
+    "certifications": [
+      {
+        "name": "NVIDIA: Fundamentals of Accelerated Computing with CUDA Python",
+        "year": "2025",
+        "url": null
+      },
+      {
+        "name": "NVIDIA: Transformer-Based NLP Applications",
+        "year": "2024",
+        "url": null
+      }
+    ],
+    "por": [
+      {
+        "role": "AIML Core Team Member, Google Developers Group OnCampus IIITN",
+        "period": "2024–2025"
+      },
+      {
+        "role": "Co-lead, Discipline Committee, Abhivyakti",
+        "period": "2025"
+      }
+    ]
+  },
+  "technologies": {
+    "genAiAgents": ["LangChain", "LangGraph", "LangFlow", "OpenAI", "FastMCP", "AutoGen"],
+    "mlDl": ["PyTorch", "Pandas", "NumPy", "Deep Learning", "NLP", "Computer Vision"],
+    "backend": ["Python", "FastAPI", "Flask"],
+    "frontend": ["Streamlit", "React", "Next.js"],
+    "cloudDevOps": ["Docker", "GitHub Actions", "AWS", "E2E Cloud"],
+    "databases": ["PostgreSQL", "ChromaDB", "MongoDB", "Neo4j"],
+    "tools": ["ElevenLabs", "n8n", "Playwright"]
+  },
+  "contact": {
+    "email": "deshantbani@gmail.com",
+    "phone": "9354532389",
+    "location": "India",
+    "github": "https://github.com/DeshantBani",
+    "linkedin": "https://linkedin.com/in/deshantbani",
+    "resumeUrl": null,
+    "calendlyUrl": null,
+    "ctaText": "Let's build something together"
+  }
+}

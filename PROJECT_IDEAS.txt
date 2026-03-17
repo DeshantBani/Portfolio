@@ -1,0 +1,220 @@
+================================================================================
+PORTFOLIO PROJECT IDEAS — Core LLM, Gen AI & Agentic AI (E2E, portfolio-worthy)
+================================================================================
+Use these to expand your knowledge for an AI/ML Engineer role and to showcase
+on your portfolio. All are end-to-end: frontend → backend → deployment.
+================================================================================
+
+1. MULTI-AGENT RESEARCH & CODE ASSISTANT
+--------------------------------------------------------------------------------
+Idea:
+  LangGraph (or LangChain) multi-agent system: planner → researcher (web/search)
+  → coder → critic. User submits a task; the system returns a plan, code, and
+  references. Demonstrates agentic design, tool use, and reasoning chains.
+
+Stack:
+  FastAPI (orchestration, optional auth), LangGraph, ChromaDB (optional for
+  code/docs retrieval), Streamlit or React frontend.
+
+Deploy:
+  Railway / Render / Fly.io.
+
+Why for your role:
+  Directly aligns with Infogain-style multi-agent (e.g. recruitment system).
+  Builds depth in LangGraph, tool-calling, and state machines. Strong story
+  for "agentic workspace" and E2E product ownership.
+
+Metrics to highlight:
+  e.g. "N-step agent pipeline", "X tools (search, code exec, file read)",
+  "sub-Ys response for simple tasks".
+
+--------------------------------------------------------------------------------
+
+2. RAG PIPELINE WITH TOOL-AUGMENTED AGENT
+--------------------------------------------------------------------------------
+Idea:
+  RAG over your own docs (or public docs) plus an agent that can call APIs,
+  run code, or search the web when retrieval alone isn’t enough. User asks
+  questions; system answers using retrieved chunks + live tools.
+
+Stack:
+  FastAPI, LangChain or LangGraph, ChromaDB (or Pinecone/Weaviate), simple
+  web UI (Streamlit or React). Optional: MCP-style tools.
+
+Deploy:
+  Fly.io / Railway.
+
+Why for your role:
+  Ties to your Infogain RAG and retrieval work. Shows "core" RAG (chunking,
+  embeddings, retrieval) plus agentic tool use. Good for interviews on
+  retrieval quality and when to use tools vs pure RAG.
+
+Metrics to highlight:
+  e.g. "Retrieval latency < Xms", "N tools (search, calculator, API)",
+  "M documents indexed".
+
+--------------------------------------------------------------------------------
+
+3. LLM EVALUATION & COST DASHBOARD
+--------------------------------------------------------------------------------
+Idea:
+  Run evals (correctness, latency, cost) across OpenAI, Anthropic, and/or
+  local models (e.g. vLLM). Store results, compare models, and visualize
+  trade-offs. Helps you (and others) choose models for production.
+
+Stack:
+  FastAPI, SQLite or PostgreSQL, React or Streamlit dashboard. Use existing
+  eval frameworks (e.g. Braintrust, promptfoo) or simple custom prompts +
+  grading.
+
+Deploy:
+  Any PaaS (Railway, Render, Fly.io).
+
+Why for your role:
+  "Core LLM optimization" narrative: model selection, cost, and quality in
+  one place. Builds skills in evals, logging, and production decision-making.
+
+Metrics to highlight:
+  e.g. "K evals per run", "N models compared", "cost per 1K tokens",
+  "accuracy / latency trade-off charts".
+
+--------------------------------------------------------------------------------
+
+4. DOCUMENT INTELLIGENCE AGENT
+--------------------------------------------------------------------------------
+Idea:
+  Upload PDF/DOCX → extract structure and tables → Q&A and summarization.
+  Optional: rule-based "compliance check" (e.g. required sections present).
+  Mirrors SOC2 audit / CaRPM document automation.
+
+Stack:
+  FastAPI, LangChain (document loaders, text splitters), optional vector
+  store for Q&A, minimal frontend (upload + results view).
+
+Deploy:
+  Railway / Render.
+
+Why for your role:
+  Directly mirrors your Infogain SOC2 audit platform and CaRPM document
+  extraction experience. Strong interview story: "cut manual review from
+  hours to minutes". Builds document parsing and validation skills.
+
+Metrics to highlight:
+  e.g. "Processing time X min per doc", "N fields extracted", "pass/fail
+  compliance checks".
+
+--------------------------------------------------------------------------------
+
+5. VOICE-FIRST AI ASSISTANT
+--------------------------------------------------------------------------------
+Idea:
+  STT (e.g. Whisper or Deepgram) → LLM → TTS (ElevenLabs). Conversational
+  agent with optional RAG for domain-specific answers. Real-time or
+  turn-based.
+
+Stack:
+  FastAPI (WebSocket or REST), ElevenLabs, Whisper (or hosted STT API),
+  simple web UI (record / play, or streaming). Optional: Pipecat-style
+  pipeline.
+
+Deploy:
+  Railway / Render / Fly.io.
+
+Why for your role:
+  Uses your ElevenLabs experience; shows multimodal, product-ready pipeline.
+  Relevant for voice AI and agentic UX roles.
+
+Metrics to highlight:
+  e.g. "End-to-end latency < Xs", "N languages", "cost per minute".
+
+--------------------------------------------------------------------------------
+
+6. INFERENCE OPTIMIZATION SHOWCASE
+--------------------------------------------------------------------------------
+Idea:
+  Serve a small open-weight model (e.g. 7B) with vLLM or TGI; compare
+  quantized (GPTQ/AWQ) vs full precision. Benchmark latency, throughput,
+  memory. Optional: simple A/B UI or Gradio for users to try both.
+
+Stack:
+  Python, vLLM (or TGI), optional FastAPI wrapper, Gradio or Streamlit.
+  Quantization: AutoGPTQ, bitsandbytes, or built-in vLLM support.
+
+Deploy:
+  GPU instance (RunPod, Lambda Labs, etc.) or CPU with a smaller model
+  (e.g. 1–3B) for demo.
+
+Why for your role:
+  "Core LLM optimization": quantization, inference tuning, and cost/latency
+  trade-offs. Good for roles focused on inference and deployment.
+
+Metrics to highlight:
+  e.g. "X% latency reduction with quantization", "Y tokens/s throughput",
+  "Z GB VRAM saved".
+
+--------------------------------------------------------------------------------
+
+7. AGENTIC ROOT CAUSE ANALYSIS (TICKET / LOGS)
+--------------------------------------------------------------------------------
+Idea:
+  LLM-driven root cause analysis over historical tickets or log data. User
+  asks "why did X fail?"; agent reasons over structured/unstructured data
+  and suggests likely causes and next steps. Similar to your Infogain
+  agentic RCA system.
+
+Stack:
+  FastAPI, LangGraph or LangChain, optional graph DB (Neo4j) or vector
+  store for tickets/logs, simple UI to query and view traces.
+
+Deploy:
+  Railway / Render / Fly.io.
+
+Why for your role:
+  Reuses and deepens your Infogain experience. Demonstrates reasoning over
+  semi-structured data and agentic workflows for ops/SRE-style use cases.
+
+Metrics to highlight:
+  e.g. "N tickets indexed", "average time to suggested cause", "trace
+  steps per query".
+
+--------------------------------------------------------------------------------
+
+8. GRAPHRAG OR KNOWLEDGE-GRAPH RAG
+--------------------------------------------------------------------------------
+Idea:
+  Build a RAG system on top of a knowledge graph (e.g. Neo4j): entities and
+  relationships. Query: "How does X relate to Y?" with multi-hop retrieval
+  and LLM synthesis. Reduces hallucinations via structured context.
+
+Stack:
+  FastAPI, Neo4j (or similar), LangChain/LlamaIndex graph integrations,
+  embedding + LLM for synthesis. Simple UI to ask questions and see subgraphs.
+
+Deploy:
+  Railway / Render (Neo4j Cloud or self-hosted).
+
+Why for your role:
+  You list Neo4j in your skills. GraphRAG is increasingly relevant for
+  enterprise and complex domains. Differentiates from "flat" vector RAG.
+
+Metrics to highlight:
+  e.g. "N entities / M relationships", "multi-hop depth", "retrieval
+  precision vs flat RAG".
+
+--------------------------------------------------------------------------------
+
+RECOMMENDED ORDER FOR PORTFOLIO & LEARNING
+--------------------------------------------------------------------------------
+- First: #1 (Multi-agent) or #2 (RAG + tools) — agentic, matches your
+  Infogain/LangGraph story.
+- Second: #4 (Document intelligence) — aligns with audit/CaRPM experience.
+- Then: #3 (Evals dashboard) or #6 (Inference) for "core LLM" depth; #5
+  (Voice) for multimodal; #7 or #8 to deepen existing experience.
+
+Include 2–3 of these as featured projects; list the rest under "More
+projects" or add as you build them. Keep the Phishing URL project as a
+short entry to show breadth (security + ML + infra).
+
+================================================================================
+End of PROJECT_IDEAS.txt
+================================================================================
