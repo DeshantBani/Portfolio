@@ -2,8 +2,8 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import type { WindowId, WindowState, PortfolioContent, GraphData } from "@/lib/types";
-import KnowledgeGraph from "./KnowledgeGraph";
+import type { WindowId, WindowState, PortfolioContent } from "@/lib/types";
+import InteractableBackground from "./InteractableBackground";
 import BootSequence from "./BootSequence";
 import FloatingWindow from "./FloatingWindow";
 import Dock from "./Dock";
@@ -16,13 +16,12 @@ import CommsWindow from "./windows/CommsWindow";
 
 interface Props {
   content: PortfolioContent;
-  graphData: GraphData;
 }
 
 const INITIAL_WINDOWS: WindowState[] = [
   {
-    id: "jarvis.ai",
-    title: "jarvis.ai",
+    id: "cortex.ai",
+    title: "cortex.ai",
     isOpen: true,
     isMinimized: false,
     zIndex: 10,
@@ -81,7 +80,7 @@ function getWindowPosition(id: WindowId, index: number, isMobile: boolean): { x:
   const w = typeof window !== "undefined" ? window.innerWidth : 1200;
   const h = typeof window !== "undefined" ? window.innerHeight : 800;
 
-  if (id === "jarvis.ai") {
+  if (id === "cortex.ai") {
     return { x: Math.max(20, w / 2 - 210), y: Math.max(20, h / 2 - 300) };
   }
   // Cascade other windows
@@ -92,11 +91,10 @@ function getWindowPosition(id: WindowId, index: number, isMobile: boolean): { x:
   };
 }
 
-export default function Desktop({ content, graphData }: Props) {
+export default function Desktop({ content }: Props) {
   const [booted, setBooted] = useState(false);
   const [windows, setWindows] = useState<WindowState[]>([]);
-  const [highlightNode, setHighlightNode] = useState<string | null>(null);
-  const [graphOpacity, setGraphOpacity] = useState(0);
+  const [bgOpacity, setBgOpacity] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [maxZ, setMaxZ] = useState(10);
 
@@ -121,14 +119,13 @@ export default function Desktop({ content, graphData }: Props) {
     );
   }, [isMobile]);
 
-  // Gradually increase graph opacity during boot
   const handleBootLineComplete = useCallback((lineIndex: number) => {
-    setGraphOpacity((lineIndex + 1) / 6);
+    setBgOpacity((lineIndex + 1) / 6);
   }, []);
 
   const handleBootComplete = useCallback(() => {
     setBooted(true);
-    setGraphOpacity(1);
+    setBgOpacity(1);
   }, []);
 
   const toggleWindow = useCallback((id: WindowId) => {
@@ -162,8 +159,8 @@ export default function Desktop({ content, graphData }: Props) {
   }, [maxZ, isMobile]);
 
   const closeWindow = useCallback((id: WindowId) => {
-    if (id === "jarvis.ai") {
-      // JARVIS can only be minimized, not closed
+    if (id === "cortex.ai") {
+      // Cortex can only be minimized, not closed
       setWindows((prev) =>
         prev.map((w) => (w.id === id ? { ...w, isMinimized: true } : w))
       );
@@ -188,8 +185,7 @@ export default function Desktop({ content, graphData }: Props) {
     );
   }, [maxZ]);
 
-  // Handle actions from JARVIS (open windows, highlight nodes)
-  const handleJarvisAction = useCallback(
+  const handleCortexAction = useCallback(
     (action: Record<string, string>) => {
       if (action.action === "open_window" && action.window) {
         const windowId = action.window as WindowId;
@@ -210,10 +206,6 @@ export default function Desktop({ content, graphData }: Props) {
           })
         );
       }
-      if (action.action === "highlight_node" && action.nodeId) {
-        setHighlightNode(action.nodeId);
-        setTimeout(() => setHighlightNode(null), 3000);
-      }
     },
     [maxZ, isMobile]
   );
@@ -222,15 +214,14 @@ export default function Desktop({ content, graphData }: Props) {
 
   // Mobile: render as stacked panels
   if (isMobile && booted) {
-    const openWindow = windows.find((w) => w.isOpen && !w.isMinimized && w.id !== "jarvis.ai");
+    const openWindow = windows.find((w) => w.isOpen && !w.isMinimized && w.id !== "cortex.ai");
 
     return (
       <div className="fixed inset-0 bg-[#0a0a0a] flex flex-col">
-        <KnowledgeGraph data={graphData} highlightNode={highlightNode} opacity={0.3} />
+        <InteractableBackground opacity={0.3} />
 
         {/* Main content area */}
         <div className="flex-1 relative z-10 overflow-hidden">
-          {/* JARVIS or section panel */}
           {openWindow ? (
             <div className="absolute inset-0 bg-[#0d0d0d]/95 backdrop-blur-xl overflow-y-auto p-4 pb-20 custom-scrollbar">
               <div className="flex items-center justify-between mb-4">
@@ -248,7 +239,7 @@ export default function Desktop({ content, graphData }: Props) {
             </div>
           ) : (
             <div className="absolute inset-0 bg-[#0d0d0d]/90 backdrop-blur-xl overflow-hidden pb-20">
-              <JarvisWindow onAction={handleJarvisAction} />
+              <JarvisWindow onAction={handleCortexAction} content={content} />
             </div>
           )}
         </div>
@@ -261,8 +252,8 @@ export default function Desktop({ content, graphData }: Props) {
 
   function renderWindowContent(id: WindowId) {
     switch (id) {
-      case "jarvis.ai":
-        return <JarvisWindow onAction={handleJarvisAction} />;
+      case "cortex.ai":
+        return <JarvisWindow onAction={handleCortexAction} content={content} />;
       case "experience.log":
         return <ExperienceWindow data={content.experience} />;
       case "projects.exe":
@@ -280,12 +271,7 @@ export default function Desktop({ content, graphData }: Props) {
 
   return (
     <div className="fixed inset-0 bg-[#0a0a0a] overflow-hidden">
-      {/* Knowledge Graph wallpaper */}
-      <KnowledgeGraph
-        data={graphData}
-        highlightNode={highlightNode}
-        opacity={booted ? 1 : graphOpacity}
-      />
+      <InteractableBackground opacity={booted ? 1 : bgOpacity} />
 
       {/* Boot sequence */}
       {!booted && (

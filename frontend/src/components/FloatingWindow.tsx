@@ -32,7 +32,7 @@ export default function FloatingWindow({
       <div ref={constraintsRef} className="fixed inset-0 z-0 pointer-events-none" />
 
       <motion.div
-        className={`fixed flex flex-col rounded-lg border border-emerald-500/20 bg-[#0d0d0d]/95 backdrop-blur-xl shadow-2xl shadow-emerald-500/5 overflow-hidden ${className}`}
+        className={`fixed flex flex-col rounded-xl border border-white/10 bg-[#0d0d0d]/90 backdrop-blur-2xl shadow-xl shadow-black/30 overflow-hidden ${className}`}
         style={{
           zIndex: windowState.zIndex,
           width: windowState.size.width,
@@ -43,6 +43,7 @@ export default function FloatingWindow({
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
         drag
+        dragConstraints={constraintsRef}
         dragMomentum={false}
         dragElastic={0}
         onDragStart={() => setIsDragging(true)}
@@ -51,7 +52,7 @@ export default function FloatingWindow({
       >
         {/* Title bar */}
         <div
-          className="flex items-center justify-between px-3 py-2 bg-[#111]/90 border-b border-emerald-500/10 cursor-grab active:cursor-grabbing select-none shrink-0"
+          className="flex items-center justify-between px-3 py-2 bg-white/5 border-b border-white/10 cursor-grab active:cursor-grabbing select-none shrink-0"
         >
           <div className="flex items-center gap-2">
             <div className="flex gap-1.5">
@@ -63,9 +64,9 @@ export default function FloatingWindow({
                 onClick={(e) => { e.stopPropagation(); onMinimize(); }}
                 className="w-3 h-3 rounded-full bg-yellow-500/80 hover:bg-yellow-400 transition-colors"
               />
-              <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+              <div className="w-3 h-3 rounded-full bg-blue-500/80" />
             </div>
-            <span className="ml-2 text-xs font-mono text-emerald-400/70">
+            <span className="ml-2 text-xs font-heading text-gray-300">
               {windowState.title}
             </span>
           </div>

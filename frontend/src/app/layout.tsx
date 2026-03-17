@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
+import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Deshant Singh Bani | AI/ML Engineer — Agent OS",
@@ -17,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Deshant Singh Bani | Agent OS",
     description:
-      "An AI-native portfolio. Talk to JARVIS — my AI agent that knows everything about my work.",
+      "An AI-native portfolio. Talk to Cortex — my AI agent that knows everything about my work.",
     type: "website",
   },
 };
@@ -28,8 +36,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className={ibmPlexMono.variable}>
+      <body className="font-sans antialiased">{children}</body>
     </html>
   );
 }

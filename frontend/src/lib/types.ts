@@ -99,7 +99,7 @@ export interface PortfolioContent {
 }
 
 export type WindowId =
-  | "jarvis.ai"
+  | "cortex.ai"
   | "experience.log"
   | "projects.exe"
   | "skills.sys"

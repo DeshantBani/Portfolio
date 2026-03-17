@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const BOOT_LINES = [
   "> initializing agent_os...",
-  "> loading knowledge graph... 47 nodes, 128 edges",
+  "> loading interface...",
   "> indexing experience... [infogain, carpm, jio, c&s electric]",
   "> mounting capabilities... [langgraph, rag, multi-agent, fastapi]",
   "> connecting voice module... elevenlabs ready",
-  "> system ready. launching jarvis.",
+  "> system ready. launching cortex.",
 ];
 
 interface Props {
@@ -73,16 +73,16 @@ export default function BootSequence({ onComplete, onLineComplete }: Props) {
                 key={i}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-emerald-400/80 mb-1"
+                className="text-blue-400/80 mb-1"
               >
                 {line}
               </motion.div>
             ))}
             {currentLine < BOOT_LINES.length && (
-              <div className="text-emerald-400 mb-1">
+              <div className="text-blue-400 mb-1">
                 {activeText}
                 <span
-                  className={`inline-block w-2 h-4 ml-0.5 bg-emerald-400 align-middle ${
+                  className={`inline-block w-2 h-4 ml-0.5 bg-blue-400 align-middle ${
                     showCursor ? "opacity-100" : "opacity-0"
                   }`}
                 />
