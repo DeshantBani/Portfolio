@@ -146,7 +146,7 @@ Each section opens as a floating window over the graph wallpaper:
 - `**projects.exe`** — Featured project cards with title, description, metrics, stack pills, GitHub/demo links. Cards fade in one by one.
 - `**skills.sys`** — Categorized grid (Gen AI and Agents, ML/DL, Backend, Cloud and DevOps, Databases, Tools). Cards with emerald glow on hover.
 - `**achievements.dat`** — Certifications (NVIDIA CUDA, Transformer NLP), POR (GDG, Abhivyakti). Compact visual cards.
-- `**comms.link**` — One-click contact:
+- `**comms.link`** — One-click contact:
   - WhatsApp: `https://wa.me/919354532389` (direct open)
   - Email: `mailto:deshantbani@gmail.com?subject=Reaching out from your portfolio`
   - LinkedIn: direct profile link

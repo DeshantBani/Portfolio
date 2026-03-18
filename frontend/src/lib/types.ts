@@ -100,6 +100,7 @@ export interface PortfolioContent {
 
 export type WindowId =
   | "cortex.ai"
+  | "about.me"
   | "experience.log"
   | "projects.exe"
   | "skills.sys"

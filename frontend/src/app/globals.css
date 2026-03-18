@@ -52,6 +52,29 @@ body {
   background: rgba(59, 130, 246, 0.45);
 }
 
+@keyframes avatarFloat {
+  0%, 100% { transform: translateY(0px) rotate(-0.5deg); }
+  50% { transform: translateY(-16px) rotate(0.5deg); }
+}
+@keyframes speakPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.06); opacity: 0.9; }
+}
+@keyframes waveDance {
+  0%, 100% { height: 6px; }
+  50% { height: 22px; }
+}
+.orb-ring-pulse {
+  animation: ringPulse 2.8s ease-in-out infinite;
+}
+.orb-wave-bar {
+  animation: waveDance 1.2s ease-in-out infinite;
+}
+
 /* Smooth animations */
 @media (prefers-reduced-motion: reduce) {
   * {

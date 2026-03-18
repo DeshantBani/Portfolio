@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import type { WindowState } from "@/lib/types";
 
@@ -22,54 +22,74 @@ export default function FloatingWindow({
   className = "",
 }: Props) {
   const constraintsRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   if (!windowState.isOpen || windowState.isMinimized) return null;
 
   return (
     <>
-      {/* Invisible constraints container */}
       <div ref={constraintsRef} className="fixed inset-0 z-0 pointer-events-none" />
 
       <motion.div
-        className={`fixed flex flex-col rounded-xl border border-white/10 bg-[#0d0d0d]/90 backdrop-blur-2xl shadow-xl shadow-black/30 overflow-hidden ${className}`}
+        className={`fixed flex flex-col overflow-hidden ${className}`}
         style={{
           zIndex: windowState.zIndex,
           width: windowState.size.width,
           height: windowState.size.height,
+          borderRadius: "12px",
+          border: "1px solid rgba(255,255,255,0.12)",
+          background: "rgba(22, 22, 24, 0.88)",
+          backdropFilter: "blur(40px) saturate(180%)",
+          WebkitBackdropFilter: "blur(40px) saturate(180%)",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.06) inset",
         }}
-        initial={{ opacity: 0, scale: 0.9, x: windowState.position.x, y: windowState.position.y }}
-        animate={{ opacity: 1, scale: 1, x: windowState.position.x, y: windowState.position.y }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        initial={{ opacity: 0, scale: 0.93, x: windowState.position.x, y: windowState.position.y }}
+        animate={{ opacity: 1, scale: 1,  x: windowState.position.x, y: windowState.position.y }}
+        exit={{ opacity: 0, scale: 0.93 }}
+        transition={{ type: "spring", stiffness: 340, damping: 28 }}
         drag
         dragConstraints={constraintsRef}
         dragMomentum={false}
         dragElastic={0}
-        onDragStart={() => setIsDragging(true)}
-        onDragEnd={() => setIsDragging(false)}
         onPointerDown={onFocus}
       >
-        {/* Title bar */}
+        {/* macOS-style title bar */}
         <div
-          className="flex items-center justify-between px-3 py-2 bg-white/5 border-b border-white/10 cursor-grab active:cursor-grabbing select-none shrink-0"
+          className="flex items-center px-3 shrink-0 cursor-grab active:cursor-grabbing select-none"
+          style={{
+            height: 38,
+            background: "rgba(38, 38, 42, 0.9)",
+            borderBottom: "1px solid rgba(255,255,255,0.07)",
+          }}
         >
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1.5">
-              <button
-                onClick={(e) => { e.stopPropagation(); onClose(); }}
-                className="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-400 transition-colors"
-              />
-              <button
-                onClick={(e) => { e.stopPropagation(); onMinimize(); }}
-                className="w-3 h-3 rounded-full bg-yellow-500/80 hover:bg-yellow-400 transition-colors"
-              />
-              <div className="w-3 h-3 rounded-full bg-blue-500/80" />
-            </div>
-            <span className="ml-2 text-xs font-heading text-gray-300">
-              {windowState.title}
-            </span>
+          {/* Traffic lights */}
+          <div className="flex gap-2 mr-3">
+            <button
+              onClick={(e) => { e.stopPropagation(); onClose(); }}
+              className="w-3 h-3 rounded-full flex items-center justify-center group transition-colors"
+              style={{ background: "#ff5f57" }}
+            >
+              <span className="text-[7px] text-black/60 opacity-0 group-hover:opacity-100 font-bold leading-none">✕</span>
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); onMinimize(); }}
+              className="w-3 h-3 rounded-full flex items-center justify-center group transition-colors"
+              style={{ background: "#febc2e" }}
+            >
+              <span className="text-[7px] text-black/60 opacity-0 group-hover:opacity-100 font-bold leading-none">−</span>
+            </button>
+            <div
+              className="w-3 h-3 rounded-full"
+              style={{ background: "#27c840" }}
+            />
           </div>
+
+          {/* Title — centered */}
+          <span
+            className="absolute left-1/2 -translate-x-1/2 text-[12px] font-medium text-white/50 pointer-events-none"
+            style={{ fontFamily: "system-ui, -apple-system" }}
+          >
+            {windowState.title}
+          </span>
         </div>
 
         {/* Content */}

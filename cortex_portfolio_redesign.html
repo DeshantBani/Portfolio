@@ -1,0 +1,427 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .portfolio-root {
+    width: 100%;
+    min-height: 600px;
+    background: #080a0f;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  canvas#bg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  .window-chrome {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 38px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 0.5px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 7px;
+    z-index: 10;
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #27c840; }
+  .chrome-title { position: absolute; left: 50%; transform: translateX(-50%); font-size: 12px; color: rgba(255,255,255,0.35); font-family: 'DM Sans', sans-serif; letter-spacing: 0.02em; }
+
+  .main-card {
+    position: relative;
+    z-index: 5;
+    width: min(440px, 90%);
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .greeting {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    font-weight: 300;
+  }
+
+  .name-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 44px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  /* Voice orb — ElevenLabs style */
+  .voice-orb-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 36px;
+    cursor: pointer;
+  }
+
+  .orb-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(100, 160, 255, 0.15);
+    animation: ringPulse 2.8s ease-in-out infinite;
+  }
+  .orb-ring:nth-child(1) { width: 120px; height: 120px; animation-delay: 0s; }
+  .orb-ring:nth-child(2) { width: 148px; height: 148px; animation-delay: 0.4s; opacity: 0.6; }
+  .orb-ring:nth-child(3) { width: 178px; height: 178px; animation-delay: 0.8s; opacity: 0.3; }
+
+  .orb-glow {
+    position: absolute;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #5b8fff, #2955cc 55%, #0d1f6e);
+    box-shadow: 0 0 40px rgba(80,120,255,0.5), 0 0 80px rgba(60,100,255,0.2);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .voice-orb-container:hover .orb-glow {
+    box-shadow: 0 0 60px rgba(100,150,255,0.8), 0 0 120px rgba(80,130,255,0.4);
+  }
+
+  .orb-waveform {
+    position: absolute;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    overflow: hidden;
+  }
+
+  .wave-bar {
+    width: 3px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 2px;
+    height: 8px;
+    animation: waveDance 1.2s ease-in-out infinite;
+  }
+  .wave-bar:nth-child(1) { animation-delay: 0s; }
+  .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+  .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+  .wave-bar:nth-child(4) { animation-delay: 0.15s; }
+  .wave-bar:nth-child(5) { animation-delay: 0.05s; }
+
+  .orb-status {
+    position: absolute;
+    bottom: -18px;
+    font-size: 11px;
+    color: rgba(120,160,255,0.7);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Input */
+  .input-wrap {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 0.5px solid rgba(255,255,255,0.1);
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0 6px 0 20px;
+    gap: 8px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .input-wrap:focus-within {
+    border-color: rgba(100,150,255,0.4);
+    background: rgba(255,255,255,0.06);
+  }
+  .input-wrap input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: rgba(255,255,255,0.8);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    padding: 14px 0;
+  }
+  .input-wrap input::placeholder { color: rgba(255,255,255,0.2); }
+  .send-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5b8fff, #2955cc);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .send-btn:hover { transform: scale(1.08); box-shadow: 0 0 16px rgba(80,130,255,0.5); }
+  .send-btn svg { width: 14px; height: 14px; fill: white; }
+
+  /* Quick action pills */
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+
+  .pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid rgba(255,255,255,0.1);
+    border-radius: 50px;
+    color: rgba(255,255,255,0.55);
+    font-size: 12.5px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .pill:hover {
+    background: rgba(100,150,255,0.1);
+    border-color: rgba(100,150,255,0.3);
+    color: rgba(255,255,255,0.9);
+  }
+  .pill-icon { font-size: 13px; }
+
+  /* Bottom nav — minimal floating */
+  .bottom-nav {
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.04);
+    border: 0.5px solid rgba(255,255,255,0.08);
+    border-radius: 50px;
+    padding: 6px 10px;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.35);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .nav-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.8);
+  }
+  .nav-item.active {
+    background: rgba(100,150,255,0.15);
+    color: rgba(130,170,255,0.95);
+  }
+  .nav-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  @keyframes ringPulse {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.06); opacity: 0.9; }
+  }
+
+  @keyframes waveDance {
+    0%, 100% { height: 6px; }
+    50% { height: 22px; }
+  }
+</style>
+
+<div class="portfolio-root" id="root">
+  <canvas id="bg"></canvas>
+
+  <div class="window-chrome">
+    <div class="dot dot-r"></div>
+    <div class="dot dot-y"></div>
+    <div class="dot dot-g"></div>
+    <span class="chrome-title">cortex.ai</span>
+  </div>
+
+  <div class="main-card">
+    <div class="greeting">Hey, I'm Deshant's AI 👋</div>
+    <div class="name-title">Cortex</div>
+    <div class="subtitle">AI Agent</div>
+
+    <div class="voice-orb-container" id="orb" title="Click to speak">
+      <div class="orb-ring"></div>
+      <div class="orb-ring"></div>
+      <div class="orb-ring"></div>
+      <div class="orb-glow"></div>
+      <div class="orb-waveform">
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+      </div>
+      <span class="orb-status" id="orbStatus">idle</span>
+    </div>
+
+    <div class="input-wrap">
+      <input type="text" placeholder="Ask me anything…" id="chatInput" />
+      <button class="send-btn">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+      </button>
+    </div>
+
+    <div class="pills">
+      <div class="pill"><span class="pill-icon">👤</span> Me</div>
+      <div class="pill"><span class="pill-icon">📁</span> Projects</div>
+      <div class="pill"><span class="pill-icon">⚡</span> Skills</div>
+      <div class="pill"><span class="pill-icon">🎯</span> Fun</div>
+      <div class="pill"><span class="pill-icon">✉️</span> Contact</div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item active"><div class="nav-dot"></div> Home</div>
+    <div class="nav-item">Experience</div>
+    <div class="nav-item">Projects</div>
+    <div class="nav-item">Skills</div>
+    <div class="nav-item">Contact</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const canvas = document.getElementById('bg');
+  const root = document.getElementById('root');
+  const ctx = canvas.getContext('2d');
+
+  let W, H, mouse = { x: -999, y: -999 };
+  const PARTICLE_COUNT = 70;
+  let particles = [];
+  let raf;
+
+  function resize() {
+    W = canvas.width = root.offsetWidth;
+    H = canvas.height = root.offsetHeight;
+  }
+
+  function Particle() {
+    this.reset();
+  }
+  Particle.prototype.reset = function() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = (Math.random() - 0.5) * 0.3;
+    this.r = Math.random() * 1.5 + 0.5;
+    this.alpha = Math.random() * 0.4 + 0.1;
+    this.color = Math.random() > 0.5 ? '100,160,255' : '180,130,255';
+  };
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      const dx = mouse.x - p.x;
+      const dy = mouse.y - p.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 120) {
+        p.vx -= dx / dist * 0.015;
+        p.vy -= dy / dist * 0.015;
+      }
+
+      p.vx *= 0.98;
+      p.vy *= 0.98;
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+
+      for (let j = i + 1; j < particles.length; j++) {
+        const q = particles[j];
+        const ex = p.x - q.x, ey = p.y - q.y;
+        const ed = Math.sqrt(ex * ex + ey * ey);
+        if (ed < 110) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = `rgba(80,130,255,${0.12 * (1 - ed / 110)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
+      ctx.fill();
+    }
+
+    raf = requestAnimationFrame(draw);
+  }
+
+  root.addEventListener('mousemove', function(e) {
+    const rect = root.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+
+  root.addEventListener('mouseleave', function() {
+    mouse.x = -999; mouse.y = -999;
+  });
+
+  const orb = document.getElementById('orb');
+  const orbStatus = document.getElementById('orbStatus');
+  const waveBars = document.querySelectorAll('.wave-bar');

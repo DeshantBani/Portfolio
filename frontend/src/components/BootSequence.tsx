@@ -1,93 +1,102 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const BOOT_LINES = [
-  "> initializing agent_os...",
-  "> loading interface...",
-  "> indexing experience... [infogain, carpm, jio, c&s electric]",
-  "> mounting capabilities... [langgraph, rag, multi-agent, fastapi]",
-  "> connecting voice module... elevenlabs ready",
-  "> system ready. launching cortex.",
-];
 
 interface Props {
   onComplete: () => void;
-  onLineComplete?: (lineIndex: number) => void;
 }
 
-export default function BootSequence({ onComplete, onLineComplete }: Props) {
-  const [lines, setLines] = useState<string[]>([]);
-  const [currentLine, setCurrentLine] = useState(0);
-  const [currentChar, setCurrentChar] = useState(0);
-  const [showCursor, setShowCursor] = useState(true);
-  const [isDone, setIsDone] = useState(false);
+export default function BootSequence({ onComplete }: Props) {
+  const [phase, setPhase] = useState<"logo" | "name" | "role" | "bar" | "done">("logo");
+  const [barWidth, setBarWidth] = useState(0);
 
-  // Cursor blink
   useEffect(() => {
-    const interval = setInterval(() => setShowCursor((v) => !v), 500);
-    return () => clearInterval(interval);
+    const t1 = setTimeout(() => setPhase("name"), 500);
+    const t2 = setTimeout(() => setPhase("role"), 1200);
+    const t3 = setTimeout(() => setPhase("bar"), 1800);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
 
-  // Token streaming effect
   useEffect(() => {
-    if (currentLine >= BOOT_LINES.length) {
-      setTimeout(() => setIsDone(true), 400);
-      setTimeout(onComplete, 1200);
-      return;
-    }
-
-    const line = BOOT_LINES[currentLine];
-    if (currentChar >= line.length) {
-      onLineComplete?.(currentLine);
-      setTimeout(() => {
-        setLines((prev) => [...prev, line]);
-        setCurrentLine((l) => l + 1);
-        setCurrentChar(0);
-      }, 200 + Math.random() * 200);
-      return;
-    }
-
-    const speed = line[currentChar] === "." ? 60 : 15 + Math.random() * 15;
-    const timer = setTimeout(() => setCurrentChar((c) => c + 1), speed);
-    return () => clearTimeout(timer);
-  }, [currentLine, currentChar, onComplete, onLineComplete]);
-
-  const activeText =
-    currentLine < BOOT_LINES.length
-      ? BOOT_LINES[currentLine].slice(0, currentChar)
-      : "";
+    if (phase !== "bar") return;
+    let raf: number;
+    const start = performance.now();
+    const duration = 1400;
+    const animate = (now: number) => {
+      const p = Math.min((now - start) / duration, 1);
+      setBarWidth(p * 100);
+      if (p < 1) {
+        raf = requestAnimationFrame(animate);
+      } else {
+        setPhase("done");
+        setTimeout(onComplete, 600);
+      }
+    };
+    raf = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(raf);
+  }, [phase, onComplete]);
 
   return (
     <AnimatePresence>
-      {!isDone && (
+      {phase !== "done" && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#0a0a0a]"
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black"
+          exit={{ opacity: 0, transition: { duration: 0.6 } }}
         >
-          <div className="w-full max-w-2xl px-6 font-mono text-sm md:text-base">
-            {lines.map((line, i) => (
+          {/* Center content */}
+          <div className="flex flex-col items-center gap-5">
+            {/* Monogram */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="w-16 h-16 rounded-2xl bg-white/6 border border-white/10 flex items-center justify-center"
+            >
+              <span className="text-white text-2xl font-black tracking-tighter select-none" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+                D
+              </span>
+            </motion.div>
+
+            {/* Name */}
+            <AnimatePresence>
+              {(phase === "name" || phase === "role" || phase === "bar") && (
+                <motion.p
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="text-white text-lg font-semibold tracking-[0.2em] uppercase"
+                  style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}
+                >
+                  Deshant Singh Bani
+                </motion.p>
+              )}
+            </AnimatePresence>
+
+            {/* Role */}
+            <AnimatePresence>
+              {(phase === "role" || phase === "bar") && (
+                <motion.p
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="text-white/40 text-sm tracking-widest uppercase"
+                  style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}
+                >
+                  AI / ML Engineer
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Progress bar — bottom of screen, Apple-style */}
+          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-48">
+            <div className="h-[3px] rounded-full bg-white/10 overflow-hidden">
               <motion.div
-                key={i}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-blue-400/80 mb-1"
-              >
-                {line}
-              </motion.div>
-            ))}
-            {currentLine < BOOT_LINES.length && (
-              <div className="text-blue-400 mb-1">
-                {activeText}
-                <span
-                  className={`inline-block w-2 h-4 ml-0.5 bg-blue-400 align-middle ${
-                    showCursor ? "opacity-100" : "opacity-0"
-                  }`}
-                />
-              </div>
-            )}
+                className="h-full rounded-full bg-white/60"
+                style={{ width: `${barWidth}%` }}
+              />
+            </div>
           </div>
         </motion.div>
       )}
